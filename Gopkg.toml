@@ -58,19 +58,19 @@
 [[constraint]]
   name = "github.com/sirupsen/logrus"
 
-[[constraint]]
+[[override]]
   name = "github.com/fatih/structs"
   version = "^1.0.0"
 
-[[constraint]]
+[[override]]
   branch = "master"
   name = "github.com/hashicorp/go-cleanhttp"
 
-[[constraint]]
+[[override]]
   branch = "master"
   name = "github.com/hashicorp/go-multierror"
 
-[[constraint]]
+[[override]]
   branch = "master"
   name = "github.com/hashicorp/go-rootcerts"
 
@@ -78,7 +78,7 @@
   branch = "master"
   name = "github.com/hashicorp/vault"
 
-[[constraint]]
+[[override]]
   branch = "master"
   name = "github.com/sethgrid/pester"
 

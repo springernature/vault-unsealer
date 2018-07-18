@@ -1,9 +1,9 @@
-GO_PKG = gitlab.jetstack.net/jetstack/vault-unsealer
+GO_PKG = github.com/jetstack/vault-unsealer
 
-REGISTRY := quay.io/jetstack
+REGISTRY := eu.gcr.io/halfpipe-io
 IMAGE_NAME := vault-unsealer
 BUILD_TAG := build
-IMAGE_TAGS := canary
+IMAGE_TAGS := latest stable
 
 BUILD_IMAGE_NAME := golang:1.9.2
 

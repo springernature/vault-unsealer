@@ -1,3 +1,6 @@
 /vault-unsealer_*_*
 /vault-unsealer
 /dist/
+.idea
+*.iml
+pipeline.yml
