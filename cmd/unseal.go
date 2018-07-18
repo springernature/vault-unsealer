@@ -7,6 +7,7 @@ import (
 	"github.com/jetstack/vault-unsealer/pkg/vault"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 const cfgUnsealPeriod = "unseal-period"
@@ -29,6 +30,9 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		appConfig.BindPFlag(cfgUnsealPeriod, cmd.PersistentFlags().Lookup(cfgUnsealPeriod))
+		appConfig.BindPFlag(cfgInitRootToken, cmd.PersistentFlags().Lookup(cfgInitRootToken))
+		appConfig.BindPFlag(cfgStoreRootToken, cmd.PersistentFlags().Lookup(cfgStoreRootToken))
+		appConfig.BindPFlag(cfgOverwriteExisting, cmd.PersistentFlags().Lookup(cfgOverwriteExisting))
 
 		store, err := kvStoreForConfig(appConfig)
 
@@ -56,6 +60,18 @@ to quickly create a Cobra application.`,
 
 		for {
 			func() {
+				initialized, err := v.Initialized()
+				if err != nil {
+					logrus.Errorf("error checking if vault is initialized: %s", err.Error())
+					return
+				}
+
+				if !initialized {
+					if err = v.Init(); err != nil {
+						logrus.Fatalf("error initialising vault: %s", err.Error())
+					}
+				}
+
 				logrus.Infof("checking if vault is sealed...")
 				sealed, err := v.Sealed()
 				if err != nil {
@@ -76,6 +92,7 @@ to quickly create a Cobra application.`,
 				}
 
 				logrus.Infof("successfully unsealed vault")
+				os.Exit(0)
 			}()
 			// wait 30 seconds before trying again
 			time.Sleep(time.Second * 30)
@@ -85,6 +102,9 @@ to quickly create a Cobra application.`,
 
 func init() {
 	unsealCmd.PersistentFlags().Duration(cfgUnsealPeriod, time.Second*30, "How often to attempt to unseal the vault instance")
+	unsealCmd.PersistentFlags().String(cfgInitRootToken, "", "root token for the new vault cluster")
+	unsealCmd.PersistentFlags().Bool(cfgStoreRootToken, true, "should the root token be stored in the key store")
+	unsealCmd.PersistentFlags().Bool(cfgOverwriteExisting, false, "overwrite existing unseal keys and root tokens, possibly dangerous!")
 
 	RootCmd.AddCommand(unsealCmd)
 }

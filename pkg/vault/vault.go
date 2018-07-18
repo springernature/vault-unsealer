@@ -46,6 +46,7 @@ var _ Vault = &vault{}
 type Vault interface {
 	Sealed() (bool, error)
 	Unseal() error
+	Initialized() (bool, error)
 	Init() error
 }
 
@@ -61,6 +62,14 @@ func New(k kv.Service, cl *api.Client, config Config) (Vault, error) {
 		cl:       cl,
 		config:   &config,
 	}, nil
+}
+
+func (u *vault) Initialized() (bool, error) {
+	resp, err := u.cl.Sys().Health()
+	if err != nil {
+		return false, fmt.Errorf("error checking health: %s", err.Error())
+	}
+	return resp.Initialized, nil
 }
 
 func (u *vault) Sealed() (bool, error) {
