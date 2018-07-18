@@ -4,4 +4,4 @@ slack_channel: "#ee-re"
 
 tasks:
 - type: docker-push
-  image: eu.gcr.io/halfpipe-io/halfpipe-example-docker
+  image: eu.gcr.io/halfpipe-io/vault-unsealer
